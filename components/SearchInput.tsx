@@ -5,7 +5,6 @@ import useDebounce from "@/hooks/useDebounce";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Input from "./Input";
-import { set } from "react-hook-form";
 
 const SearchInput = () => {
   const router = useRouter();
