@@ -47,7 +47,7 @@ const UploadModal = () => {
 
       //   upload songs
       const { data: songData, error: songError } = await supabaseClient.storage
-        .from("lu_songs")
+        .from("songs")
         .upload(`song-${values.title}-${uniqueId}`, songFile, {
           cacheControl: "3600",
           upsert: false,
@@ -88,6 +88,7 @@ const UploadModal = () => {
       setIsLoading(false);
       toast.success("Song Created!");
       reset();
+      uploadModal.onClose();
     } catch (error) {
       toast.error("Something went Wrong!");
     } finally {

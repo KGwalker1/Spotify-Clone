@@ -24,6 +24,11 @@ export interface Props {
   [propName: string]: any;
 }
 
+interface DbResult<T> {
+  data: T | null;
+  error: Error | null;
+}
+
 export const MyUserContextProvider = (props: Props) => {
   const {
     session,
@@ -36,13 +41,39 @@ export const MyUserContextProvider = (props: Props) => {
   const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
   const [subscription, setSubscription] = useState<Subscription | null>(null);
 
-  const getUserDetails = () => supabase.from("users").select("*").single();
-  const getSubscription = () =>
-    supabase
-      .from("subscriptions")
-      .select("*, prices(*, products(*))")
-      .in("status", ["trialing", "active"])
-      .single();
+  const getUserDetails = async () => {
+    try {
+      const response = (await Promise.race([
+        supabase.from("users").select("*").single(),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("Timeout")), 5000)
+        ),
+      ])) as DbResult<UserDetails>;
+      return response;
+    } catch (error) {
+      console.error("Error fetching user details:", error);
+      return null;
+    }
+  };
+
+  const getSubscription = async () => {
+    try {
+      const response = (await Promise.race([
+        supabase
+          .from("subscriptions")
+          .select("*, prices(*, products(*))")
+          .in("status", ["trialing", "active"])
+          .single(),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("Timeout")), 5000)
+        ),
+      ])) as DbResult<Subscription>;
+      return response;
+    } catch (error) {
+      console.error("Error fetching subscription:", error);
+      return null;
+    }
+  };
 
   useEffect(() => {
     if (user && !isLoadingData && !userDetails && !subscription) {
@@ -50,20 +81,25 @@ export const MyUserContextProvider = (props: Props) => {
 
       Promise.allSettled([getUserDetails(), getSubscription()]).then(
         (results) => {
-          const userDetailsPromise = results[0];
-          const subscriptionPromise = results[1];
+          const [userDetailsPromise, subscriptionPromise] = results;
 
-          if (userDetailsPromise.status === "fulfilled") {
+          if (
+            userDetailsPromise.status === "fulfilled" &&
+            userDetailsPromise.value
+          ) {
             setUserDetails(userDetailsPromise.value.data as UserDetails);
           }
-          if (subscriptionPromise.status === "fulfilled") {
+          if (
+            subscriptionPromise.status === "fulfilled" &&
+            subscriptionPromise.value
+          ) {
             setSubscription(subscriptionPromise.value.data as Subscription);
           }
 
           setIsLoadingData(false);
         }
       );
-    } else if (!user && !isLoadingUser && isLoadingData) {
+    } else if (!user && !isLoadingUser && !isLoadingData) {
       setUserDetails(null);
       setSubscription(null);
     }
