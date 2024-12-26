@@ -1,5 +1,6 @@
 "use client";
 
+import { Song } from "@/types";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { FaPlay } from "react-icons/fa";
@@ -9,7 +10,7 @@ interface ListItemProps {
   image: string;
   name: string;
   href: string;
-  data: any;
+  data?: Song;
 }
 
 const ListItem: React.FC<ListItemProps> = ({ image, name, href, data }) => {

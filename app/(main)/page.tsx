@@ -18,6 +18,7 @@ export default async function Home() {
               image="/favourite.jpg"
               name="Favourite Songs"
               href="liked"
+              data={{} as Song}
             />
           </div>
         </div>
