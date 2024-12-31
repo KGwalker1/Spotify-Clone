@@ -1,36 +1,252 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Here's the documentation in markdown format:
 
-## Getting Started
+# Spotify Clone Documentation
 
-First, run the development server:
+## Project Overview
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+A full-stack Spotify clone built with Next.js 13+, featuring real-time music playback, user authentication, and library management.
+
+## Technical Stack
+
+- **Framework**: Next.js 13+ (App Router)
+- **Database & Auth**: Supabase
+- **Styling**: Tailwind CSS
+- **State Management**: Zustand
+- **Audio**: use-sound
+- **TypeScript**: For type safety
+
+## Core Components
+
+### Player System
+
+```typescript
+// components/PlayerContent.tsx
+interface PlayerContentProps {
+  song: Song;
+  songUrl: string;
+}
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Handles:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Music playback controls
+- Volume management
+- Track navigation
+- Real-time song updates
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Media Components
 
-## Learn More
+```typescript
+// components/MediaItem.tsx
+interface MediaItemProps {
+  data: Song;
+  onClick?: (id: string) => void;
+}
+```
 
-To learn more about Next.js, take a look at the following resources:
+- Displays song information
+- Handles song selection
+- Image loading optimization
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Custom Hooks
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+#### usePlayer
 
-## Deploy on Vercel
+```typescript
+// hooks/usePlayer.ts
+interface PlayerStore {
+  ids: string[];
+  activeId?: string;
+  setId: (id: string) => void;
+  setIds: (ids: string[]) => void;
+  reset: () => void;
+}
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Manages global player state
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+#### useLoadSongUrl
+
+```typescript
+// hooks/useLoadSongUrl.ts
+const useLoadSongUrl = (song: Song | undefined) => {
+  // Returns song URL from Supabase storage
+};
+```
+
+Handles song URL loading
+
+#### useGetSongById
+
+```typescript
+// hooks/useGetSongById.ts
+const useGetSongById = (id?: string) => {
+  // Returns song data and loading state
+};
+```
+
+Fetches individual song data
+
+## Data Types
+
+### Song Type
+
+```typescript
+// types.ts
+interface Song {
+  id: string;
+  user_id: string;
+  author: string;
+  title: string;
+  song_path: string;
+  image_path: string;
+}
+```
+
+### User Details
+
+```typescript
+interface UserDetails {
+  id: string;
+  first_name: string;
+  last_name: string;
+  full_name: string;
+  avatar_url: string;
+  billing_address?: Stripe.Address;
+  payment_method?: Stripe.PaymentMethod;
+}
+```
+
+## Key Features
+
+### Music Player
+
+- Play/Pause functionality
+- Volume control with slider
+- Next/Previous track navigation
+- Continuous playback
+- Real-time progress tracking
+
+### Library Management
+
+- Like/Unlike songs
+- Personal library view
+- Song metadata display
+- Image thumbnails
+
+### UI Components
+
+#### Slider
+
+```typescript
+// components/Slider.tsx
+interface SliderProps {
+  value?: number;
+  onChange?: (value: number) => void;
+  max?: number;
+  step?: number;
+}
+```
+
+Custom volume slider component
+
+#### ListItem
+
+```typescript
+// components/ListItem.tsx
+interface ListItemProps {
+  image: string;
+  name: string;
+  href: string;
+  data?: Song;
+}
+```
+
+Reusable list item component
+
+## Setup Instructions
+
+### Environment Variables
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+```
+
+### Installation
+
+```bash
+npm install
+npm run dev
+```
+
+### Supabase Setup
+
+1. Create a new Supabase project
+2. Set up authentication providers
+3. Create storage buckets for:
+   - songs
+   - images
+4. Configure database tables
+
+## Project Structure
+
+```
+├── app/
+│   ├── layout.tsx
+│   └── page.tsx
+├── components/
+│   ├── Player/
+│   ├── Slider.tsx
+│   ├── MediaItem.tsx
+│   └── LikeButton.tsx
+├── hooks/
+│   ├── usePlayer.ts
+│   ├── useLoadSongUrl.ts
+│   └── useGetSongById.ts
+└── types/
+    └── index.ts
+```
+
+## API Actions
+
+### getSongs
+
+```typescript
+// actions/getSongs.ts
+const getSongs = async (): Promise<Song[]> => {
+  // Fetches songs from Supabase
+};
+```
+
+## Dependencies
+
+- @supabase/auth-helpers-nextjs
+- @radix-ui/react-slider
+- use-sound
+- zustand
+- tailwind-merge
+- react-hot-toast
+- react-icons
+
+## Best Practices
+
+1. TypeScript for type safety
+2. Server-side rendering optimization
+3. Error handling
+4. Loading states
+5. Responsive design
+6. Audio lifecycle management
+7. State management patterns
+
+## Contributing
+
+1. Fork the repository
+2. Create feature branch
+3. Commit changes
+4. Push to branch
+5. Create Pull Request
+
+## License
+
+MIT License
