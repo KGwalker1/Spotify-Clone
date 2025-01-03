@@ -12,27 +12,28 @@ import Player from "@/components/Player";
 const font = Figtree({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "spotify clone",
+  title: "Spotify Clone",
   description: "Listen to music",
 };
 
-export const revalidate = 0;
-
 export default async function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   const userSongs = await getSongsByUserId();
+
   return (
-    <html lang="en">
-      <body className={font.className}>
+    <html lang="en" suppressHydrationWarning>
+      <body className={font.className} suppressHydrationWarning>
         <ToasterProvider />
         <SupabaseProvider>
           <UserProvider>
             <ModalProvider />
-            <SideBar songs={userSongs}>{children}</SideBar>
-            <Player />
+            <div className="h-full">
+              <SideBar songs={userSongs}>{children}</SideBar>
+              <Player />
+            </div>
           </UserProvider>
         </SupabaseProvider>
       </body>

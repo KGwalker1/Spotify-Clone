@@ -4,13 +4,19 @@ import useGetSongById from "@/hooks/useGetSongById";
 import useLoadSongUrl from "@/hooks/useLoadSongUrl";
 import usePlayer from "@/hooks/usePlayer";
 import PlayerContent from "./PlayerContent";
+import { useEffect, useState } from "react";
 
 const Player = () => {
   const player = usePlayer();
   const { song } = useGetSongById(player.activeId);
   const songUrl = useLoadSongUrl(song);
+  const [mounted, setMounted] = useState(false);
 
-  if (!song || !songUrl || !player.activeId) {
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted || !song || !songUrl || !player.activeId) {
     return null;
   }
 
