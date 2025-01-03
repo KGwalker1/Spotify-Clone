@@ -38,7 +38,10 @@ const Header: React.FC<HeaderProps> = ({ children, className }) => {
   };
   return (
     <div
-      className={twMerge(`h-fit bg-gradient-to-b from-red-300 p-6`, className)}
+      className={twMerge(
+        `h-fit bg-gradient-to-b from-green-300 p-6`,
+        className
+      )}
     >
       <div className="w-full mb-4 flex itmes-center justify-between">
         <div className="hidden md:flex gap-x-2 itmes-center">

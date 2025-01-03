@@ -24,8 +24,8 @@ export default async function RootLayout({
   const userSongs = await getSongsByUserId();
 
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={font.className} suppressHydrationWarning>
+    <html lang="en">
+      <body className={font.className}>
         <ToasterProvider />
         <SupabaseProvider>
           <UserProvider>

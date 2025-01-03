@@ -92,6 +92,22 @@ const PlayerContent: React.FC<PlayerContentProps> = ({ song, songUrl }) => {
     }
   };
 
+  // Add space bar control
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (event.code === "Space" && !event.repeat) {
+        event.preventDefault(); // Prevent page scroll
+        handlePlay();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [isPlaying]);
+
   if (!song?.id) {
     return null;
   }
